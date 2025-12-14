@@ -32,3 +32,8 @@ variable "public_access_network_enabled" {
   description = "Allow public access to the workspace"
   default     = true
 }
+
+variable "region_metastore_id_map" {
+  type = map(string)
+  description = "A map of regions and existing metastore IDs"
+}

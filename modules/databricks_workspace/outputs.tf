@@ -8,6 +8,11 @@ output "rg_id" {
   description = "The Databricks resource group ID"
 }
 
+output "rg_location" {
+  value = azurerm_resource_group.rg_databricks.location
+  description = "The Databricks resource group location"
+}
+
 output "dbw_id" {
   value       = azurerm_databricks_workspace.dbw.id
   description = "The Databricks workspace's Azure ID"

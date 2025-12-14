@@ -1,23 +1,53 @@
-module "subscription" {
-  source = "./modules/subscription"
-  providers = {
-    azurerm = azurerm.base
+terraform {
+  required_version = "~> 1.14.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.56.0"
+    }
+    databricks = {
+      source  = "databricks/databricks"
+      version = "~> 1.99.0"
+    }
   }
-  mca_billing_account_id = var.mca_billing_account_id
-  billing_profile_id     = var.azure_default_billing_profile_id
-  invoice_section_id     = var.invoice_section_id
-  subscription_name      = var.subscription_name
-  workload               = var.workload
-  tags                   = var.tags
+}
+
+data "tfe_outputs" "source_workspace" {
+  workspace    = var.tf_source_workspace_name
+  organization = var.tf_organization_name
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = data.tfe_outputs.source_workspace.nonsensitive_values.subscription_id
+  tenant_id       = var.azure_tenant_id
+  client_id       = var.azure_client_id
+  client_secret   = var.azure_client_secret
+}
+
+provider "databricks" {
+  host                = "https://accounts.azuredatabricks.net/"
+  account_id          = var.dbw_account_id
+  azure_tenant_id     = var.azure_tenant_id
+  azure_client_id     = var.azure_client_id
+  azure_client_secret = var.azure_client_secret
+}
+
+data "databricks_metastores" "all" {}
+
+data "databricks_metastore" "this" {
+  for_each     = data.databricks_metastores.all.ids
+  metastore_id = each.value
+}
+
+locals {
+  region_metastore_id_map = { for m in data.databricks_metastore.this : m.region => m.id }
 }
 
 module "databricks_workspace" {
-  source = "./modules/databricks_workspace"
-  providers = {
-    azurerm    = azurerm.new
-    databricks = databricks.account
-  }
-  dbw_workspace_name            = coalesce(var.dbw_workspace_name, var.subscription_name)
+  source                        = "./modules/databricks_workspace"
+  dbw_workspace_name            = coalesce(var.dbw_workspace_name, data.tfe_outputs.source_workspace.nonsensitive_values.subscription_name)
+  region_metastore_id_map = local.region_metastore_id_map
   sku                           = var.sku
   region                        = var.region
   public_access_network_enabled = var.public_access_network_enabled

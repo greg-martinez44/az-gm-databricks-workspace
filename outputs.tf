@@ -1,21 +1,11 @@
-output "billing_scope_id" {
-  value       = module.subscription.billing_scope_id
-  description = "The subscription's billing scope ID"
-}
-
-output "subscription_resource_id" {
-  value       = module.subscription.subscription_resource_id
-  description = "The subscription's resource ID"
-}
-
-output "subscription_guid" {
-  value       = module.subscription.subscription_guid
-  description = "The subscription's GUID"
-}
-
 output "subscription_id" {
-  value       = module.subscription.subscription_id
-  description = "The subscription's ID"
+  value       = data.tfe_outputs.source_workspace.nonsensitive_values.subscription_id
+  description = "The Azure subscription's ID"
+}
+
+output "subscription_name" {
+  value = data.tfe_outputs.source_workspace.nonsensitive_values.subscription_name
+  description = "The Azure subscription's name"
 }
 
 output "rg_name" {
@@ -26,6 +16,11 @@ output "rg_name" {
 output "rg_id" {
   value       = module.databricks_workspace.rg_id
   description = "The Databricks resource group ID"
+}
+
+output "rg_location" {
+  value = module.databricks_workspace.rg_location
+  description = "The Databricks resource group's region"
 }
 
 output "dbw_id" {

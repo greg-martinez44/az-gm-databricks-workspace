@@ -29,19 +29,8 @@ resource "azurerm_databricks_workspace" "dbw" {
   }
 }
 
-data "databricks_metastores" "all" {}
-
-data "databricks_metastore" "this" {
-  for_each     = data.databricks_metastores.all.ids
-  metastore_id = each.value
-}
-
-locals {
-  region_metastore_id = try(coalesce([for m in data.databricks_metastore.this : m.region == azurerm_resource_group.rg_databricks.location ? m.id : null])[0], null)
-}
-
 resource "databricks_metastore" "this" {
-  count         = local.region_metastore_id == null ? 1 : 0
+  count         = try() == null ? 1 : 0
   name          = "metastore_azure_${azurerm_resource_group.rg_databricks.location}"
   force_destroy = true
   owner         = "sp-admin-automation"

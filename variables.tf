@@ -1,3 +1,14 @@
+variable "tf_organization_name" {
+  type        = string
+  description = "The Terraform Cloud organization name"
+  default     = "gm-practice-org"
+}
+
+variable "tf_source_workspace_name" {
+  type        = string
+  description = "The Terraform Cloud workspace that created the target subscription"
+}
+
 variable "azure_tenant_id" {
   type        = string
   description = "The automation service principal's tenant ID"
@@ -12,42 +23,6 @@ variable "azure_client_secret" {
   type        = string
   description = "The automation service principal's client secret"
   sensitive   = true
-}
-
-variable "azure_default_subscription_id" {
-  type        = string
-  description = "The default subscription for the automation service principal to authenticate with"
-}
-
-variable "mca_billing_account_id" {
-  type        = string
-  description = "The default tenant's billing scope account ID"
-}
-
-variable "azure_default_billing_profile_id" {
-  type        = string
-  description = "The target billing profile ID"
-}
-
-variable "invoice_section_id" {
-  type        = string
-  description = "The target invoice section ID"
-}
-
-variable "subscription_name" {
-  type        = string
-  description = "The new subscription name"
-}
-
-variable "workload" {
-  type        = string
-  description = "The new subscription workload"
-  default     = "Production"
-
-  validation {
-    condition     = contains(["Production", "DevTest"], var.workload)
-    error_message = "Workload must be Production or DevTest."
-  }
 }
 
 variable "tags" {

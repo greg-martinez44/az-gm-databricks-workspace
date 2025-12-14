@@ -3,7 +3,7 @@ terraform {
     organization = "gm-practice-org"
     workspaces {
       project = "Azure"
-      name    = "prod-workspace-01"
+      name    = "prod-dbw-databricks-westus2-001"
     }
   }
 }
