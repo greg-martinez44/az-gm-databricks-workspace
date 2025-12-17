@@ -1,17 +1,3 @@
-terraform {
-  required_version = "~> 1.14.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.56.0"
-    }
-    databricks = {
-      source  = "databricks/databricks"
-      version = "~> 1.99.0"
-    }
-  }
-}
-
 data "tfe_outputs" "source_workspace" {
   workspace    = var.tf_source_workspace_name
   organization = var.tf_organization_name
